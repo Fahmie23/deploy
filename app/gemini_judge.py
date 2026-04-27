@@ -49,12 +49,23 @@ Return ONLY the raw JSON. No markdown code blocks, no extra text.
 
 SCORE_KEYS = ["pitch", "rhythm", "vibrato", "breath_control", "timbre", "overall_performance"]
 
+MOCK_RESULT: Dict[str, Any] = {
+    "pitch": 70,
+    "rhythm": 70,
+    "vibrato": 70,
+    "breath_control": 70,
+    "timbre": 70,
+    "overall_performance": 70,
+    "criticism": "This is a mock evaluation. No Gemini API key was provided.",
+    "advice": "Set GEMINI_API_KEY in your .env file to enable real AI-powered feedback.",
+}
+
 
 class GeminiSingingJudge:
     def __init__(self):
-        if not GEMINI_API_KEY:
-            raise ValueError("GEMINI_API_KEY is missing. Please check your .env and config.py.")
-        self.client = genai.Client(api_key=GEMINI_API_KEY)
+        self._mock = not GEMINI_API_KEY
+        if not self._mock:
+            self.client = genai.Client(api_key=GEMINI_API_KEY)
 
     def evaluate(self, audio_path: str) -> Dict[str, Any]:
         """
@@ -67,6 +78,10 @@ class GeminiSingingJudge:
             Dict with scores (pitch, rhythm, vibrato, breath_control, timbre,
             overall_performance) and text (criticism, advice)
         """
+        if self._mock:
+            print("[Gemini] No API key — returning mock scores.")
+            return MOCK_RESULT
+
         # Upload audio file to Gemini
         print(f"[Gemini] Uploading: {os.path.basename(audio_path)}")
         audio_file = self.client.files.upload(file=audio_path)

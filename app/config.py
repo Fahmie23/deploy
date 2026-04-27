@@ -12,9 +12,9 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 API_KEY = os.getenv("API_KEY")
 RATE_LIMIT = os.getenv("RATE_LIMIT", "10/minute")
 
-# Validation (Crash early if key is missing)
 if not GEMINI_API_KEY:
-    raise ValueError("Missing GEMINI_API_KEY in .env file")
+    import warnings
+    warnings.warn("GEMINI_API_KEY is not set — Gemini judge will return hardcoded mock scores.")
 
 # ── MERT Model Toggle ──────────────────────────────────────────────────────
 # Switch between "small" and "big" to select the MERT model variant.
