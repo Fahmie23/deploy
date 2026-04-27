@@ -1,0 +1,74 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      singing-judge:
+        condition: service_healthy
+    restart: unless-stopped
+
+  vllm:
+    image: vllm/vllm-openai:v0.19.1
+    container_name: vllm
+    volumes:
+      - hf_cache:/root/.cache/huggingface
+    environment:
+      - HF_HUB_OFFLINE=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: >
+      --model Qwen/Qwen2.5-0.5B-Instruct
+      --port 8001
+      --dtype half
+      --max-model-len 2048
+      --gpu-memory-utilization 0.70
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
+    restart: unless-stopped
+
+  singing-judge:
+    build: .
+    image: singing-judge
+    container_name: singing-judge
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --root-path /vsing_api
+    env_file:
+      - .env
+    volumes:
+      - hf_cache:/home/appuser/.cache/huggingface
+    depends_on:
+      vllm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/stats"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  hf_cache:
+  caddy_data:
+  caddy_config:

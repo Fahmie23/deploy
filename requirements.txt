@@ -1,0 +1,19 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+slowapi
+
+# Audio
+librosa
+numpy
+scipy
+
+# MERT / embeddings
+torch
+transformers
+scikit-learn==1.7.2
+
+# LLM judges
+openai
+google-genai

@@ -1,0 +1,111 @@
+# VSING Singing Judge — Deployment Guide
+
+## First-Time Setup (Fresh Machine)
+
+Follow these steps once before you can use the API for the first time.
+
+### 1. Install Docker Desktop
+
+Download and install from: https://www.docker.com/products/docker-desktop
+
+Open **Docker Desktop** and wait until the bottom-left status shows **"Engine running"**.
+
+> Tip: In Docker Desktop → Settings → General, enable **"Start Docker Desktop when you sign in"** so it starts automatically on every boot.
+
+---
+
+### 2. Open WSL2
+
+Press **Win + R** and type:
+
+```
+wsl -d Ubuntu-22.04
+```
+
+---
+
+### 3. Navigate to the deploy folder
+
+```bash
+cd /mnt/c/Users/fahmi/Downloads/deploy
+```
+
+---
+
+### 4. Run the setup script
+
+```bash
+bash setup.sh
+```
+
+This does the following:
+- Fixes the Docker credential helper for WSL2
+- Installs the NVIDIA Container Toolkit so Docker can access your GPU
+- Configures Docker to use the NVIDIA runtime
+- Verifies that the GPU is accessible from Docker
+
+> This only needs to be run **once** on a fresh machine. Skip this on subsequent deployments.
+
+---
+
+### 5. Start the API
+
+```bash
+docker compose up -d
+```
+
+The first run will take **5–10 minutes** — the AI models are being downloaded and loaded. Subsequent starts are much faster.
+
+---
+
+### 6. Verify the API is ready
+
+```bash
+curl http://localhost/vsing_api/stats
+```
+
+You should see a JSON response like:
+
+```json
+{
+  "gpu_name": "NVIDIA GeForce RTX 3060",
+  "allocated_mb": 312.5,
+  "reserved_mb": 512.0,
+  "total_mb": 12288.0,
+  "free_mb": 11776.0
+}
+```
+
+If you get a connection error, wait 30–60 seconds and try again — the models are still loading in the background.
+
+---
+
+## Subsequent Starts (Already Set Up)
+
+Once the machine has been set up, you only need to do this every time you want to use the API:
+
+1. Open **Docker Desktop** and wait for **"Engine running"**
+2. Open WSL2: **Win + R** → `wsl -d Ubuntu-22.04`
+3. Navigate to the deploy folder: `cd /mnt/c/Users/fahmi/Downloads/deploy`
+4. Start the API: `docker compose up -d`
+5. Verify: `curl http://localhost/vsing_api/stats`
+
+---
+
+## Stopping the API
+
+```bash
+docker compose down
+```
+
+---
+
+## Useful Commands
+
+| Task | Command |
+|------|---------|
+| Start the API | `docker compose up -d` |
+| Stop the API | `docker compose down` |
+| Check container status | `docker compose ps` |
+| View logs | `docker compose logs -f singing-judge` |
+| Rebuild after code changes | `docker compose up --build --force-recreate` |

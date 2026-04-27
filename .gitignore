@@ -1,0 +1,17 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+
+# ML artifacts (large files — commit separately or use Git LFS)
+ml_training/*.pkl
+
+# Temp files
+temp_upload_*
+*.wav.tmp
