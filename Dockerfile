@@ -30,6 +30,6 @@ USER appuser
 # Redirect numba cache to a writable location for non-root user
 ENV NUMBA_CACHE_DIR=/tmp/numba_cache
 
-EXPOSE 8000
+EXPOSE 8008
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8008"]

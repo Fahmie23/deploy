@@ -6,7 +6,7 @@ load_dotenv()
 # Fetch variables
 MODEL_NAME = os.getenv("LLM_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
 TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.2"))
-VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", "http://vllm:8001/v1")
+VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", "http://vllm:8007/v1")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 API_KEY = os.getenv("API_KEY")

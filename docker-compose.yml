@@ -29,12 +29,12 @@ services:
               capabilities: [gpu]
     command: >
       --model Qwen/Qwen2.5-0.5B-Instruct
-      --port 8001
+      --port 8007
       --dtype half
       --max-model-len 2048
       --gpu-memory-utilization 0.25
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8007/health"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -45,7 +45,7 @@ services:
     build: .
     image: singing-judge
     container_name: singing-judge
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --root-path /vsing_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8008 --root-path /vsing_api
     env_file:
       - .env
     volumes:
@@ -54,7 +54,7 @@ services:
       vllm:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/stats"]
+      test: ["CMD", "curl", "-f", "http://localhost:8008/stats"]
       interval: 15s
       timeout: 5s
       retries: 10

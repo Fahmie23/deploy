@@ -1,6 +1,6 @@
 :80 {
     handle /vsing_api/* {
         uri strip_prefix /vsing_api
-        reverse_proxy singing-judge:8000
+        reverse_proxy singing-judge:8008
     }
 }
