@@ -17,7 +17,7 @@ services:
     image: vllm/vllm-openai:v0.19.1
     container_name: vllm
     volumes:
-      - hf_cache:/root/.cache/huggingface
+      - vllm_hf_cache:/root/.cache/huggingface
     environment:
       - HF_HUB_OFFLINE=0
     deploy:
@@ -32,7 +32,7 @@ services:
       --port 8001
       --dtype half
       --max-model-len 2048
-      --gpu-memory-utilization 0.70
+      --gpu-memory-utilization 0.25
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s
@@ -49,7 +49,7 @@ services:
     env_file:
       - .env
     volumes:
-      - hf_cache:/home/appuser/.cache/huggingface
+      - judge_hf_cache:/home/appuser/.cache/huggingface
     depends_on:
       vllm:
         condition: service_healthy
@@ -69,6 +69,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  hf_cache:
+  vllm_hf_cache:
+  judge_hf_cache:
   caddy_data:
   caddy_config:
