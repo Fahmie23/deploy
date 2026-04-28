@@ -131,6 +131,46 @@ Once the machine has been set up, you only need to do this every time you want t
 
 ---
 
+## Updating the Gemini API Key
+
+The Gemini API key is stored in the `.env` file at the root of the project.
+
+### Adding or changing the key
+
+1. Open `.env` and set the key:
+
+   ```
+   GEMINI_API_KEY=your_key_here
+   ```
+
+2. Copy the updated `.env` into WSL:
+
+   ```bash
+   cp /mnt/c/Users/user/Desktop/deploy/.env ~/deploy/.env
+   ```
+
+3. Restart the API to apply the change:
+
+   ```bash
+   cd ~/deploy
+   docker compose down
+   docker compose up -d
+   ```
+
+### Removing the key
+
+1. Open `.env` and clear the value:
+
+   ```
+   GEMINI_API_KEY=
+   ```
+
+2. Copy and restart (same as above steps 2–3).
+
+> The app will fall back to mock mode for any Gemini-dependent features when the key is empty.
+
+---
+
 ## Stopping the API
 
 ```bash
